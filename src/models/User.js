@@ -32,6 +32,12 @@ const UserSchema = new mongoose.Schema({
         type: String,
         select: false,
     },
+    bands: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'Band'
+        }
+    ],
     infos: {
         address: {
             zipcode: Number,
@@ -55,6 +61,9 @@ const UserSchema = new mongoose.Schema({
 });
 
 UserSchema.pre('save', async function(next) {
+    if(!this.password)
+        next();
+
     const hash = await bcrypt.hash(this.password, 10);
     this.password = hash;
 

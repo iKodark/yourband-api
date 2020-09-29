@@ -69,15 +69,13 @@ const signUp = async (data) => {
 
 const prepareSignin = ({
     body: {
-        email,
-        password,
-        username
+        login,
+        password
     }
 }) => {
     return {
-        email,
-        password,
-        username
+        login,
+        password
     }
 }
 
@@ -86,7 +84,7 @@ const signin = async (data) => {
     try {
 
         const user = await User.findOne({
-            $or:[ {'email': data.email}, {'username': data.username} ]
+            $or:[ {'email': data.login}, {'username': data.login} ]
         }, {
             password: 1, id: 1, email: 1, username: 1
         });
