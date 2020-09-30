@@ -29,7 +29,7 @@ const createBand = async (data) => {
 
         await band.save();
 
-        const userById = await User.findById(data._id);
+        const userById = await User.findById(data._id).populate('bands');
 
         userById.bands.push(band);
         await userById.save();
@@ -72,7 +72,7 @@ const readBand = async (data) => {
     try {
 
         const userById = await User.findById(data._id).populate('bands');
-
+        console.log(userById);
         response = {
             json: {
                 message: 'Band successfully created!',
