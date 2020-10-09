@@ -1,13 +1,14 @@
 import AWS from 'aws-sdk';
 import S3 from 'aws-sdk/clients/s3';
 
+
 AWS.config.update({region:'REGION'});
 
 s3 = new S3({apiVersion:'2006-03-01'});
 
 
 
-function listaBucket(data){
+/* function listaBucket(){
 s3.listBuckets(function(err,data){
     if(err){
         console.log("ERRO: ",err);
@@ -15,24 +16,18 @@ s3.listBuckets(function(err,data){
         console.log("Sucesso",data.Buckets)
     }
 });
-}
+} */
 
 function CreateBucket(data){
     var bucketParam ={
-        Bucket: process.argv[2]
+        Bucket: data.bucketname
     };
-    s3.CreateBucket(bucketParam,function(err,data){
-        if(err){
-            console.log("ERRO: ",err);
-        }else{
-            console.log("OK",data.Location);
-        }
-    });
+    s3.CreateBucket(bucketParam);
 }
 
-function upfile(file){
-    var uploadParams = {Bucket: process.argv[2], Key: '', Body: ''};
-var file = process.argv[3];
+function upload(file){
+    var uploadParams = {Bucket: data.bucketname, Key: '', Body: ''};
+var file = data.file;
 
 // Configura o arquivo para leitura e Obtem os parametros
 var fs = require('fs');
@@ -45,22 +40,16 @@ var path = require('path');
 uploadParams.Key = path.basename(file);
 
 // Sobe arquivo para o Bucket
-s3.upload (uploadParams, function (err, data) {
-  if (err) {
-    console.log("Error", err);
-  } if (data) {
-    console.log("Upload OK", data.Location);
-  }
-});
+s3.upload (uploadParams);
 }
 function ListObject(data){
     
 var bucketParams = {
-    Bucket : 'BUCKET_NAME',
+    Bucket : data.bucketname,
   };
   
   // Lista Objetos do Bucket
-  s3.listObjects(bucketParams, function(err, data) {
+  s3.getObject(bucketParams, function(err, data) {
     if (err) {
       console.log("Erro:", err);
     } else {

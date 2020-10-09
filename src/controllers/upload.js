@@ -1,9 +1,29 @@
+var AWS = require("aws-sdk");
+
+const S3Client = require("aws-sdk/clients/s3")
+
+const bucketName="yourband"
+
 const upload = async (data) => {
 
     let response;
 
     try {
-
+        async function uploadToS3 (attachmentId, data, mimetype, fileName) {
+            const params = {
+             Bucket: bucketName,
+             Key: attachmentId,
+             Body: data,
+             ContentType: mimetype,
+             Metadata: {
+              fileName
+             }
+            }
+            // Upload to S3
+            return s3.upload(params).promise()
+            
+           }
+      
 
 
         response = {
@@ -29,8 +49,18 @@ const read = async (data) => {
     let response;
 
     try {
+s3 = new S3Client();
+        var bucketParams = {
+            Bucket: bucketName,
+            MaxKeys: 20,
+            Delimiter: "/",
+            Prefix: path,
+          };
+          
+          // Lista Objetos do Bucket
+          return s3.getObject(bucketParams);
+    
 
-        
 
         response = {
             json: {
