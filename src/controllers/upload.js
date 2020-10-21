@@ -1,36 +1,47 @@
-var AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 
-const S3Client = require("aws-sdk/clients/s3")
+const bucketName='yourband';
+const accesskey='AKIAINWXYSMZDUE2WCWA';
+const accesskeysecret='hCk0tWLPG/ktxRQkFacmzSVmcA3NzfDGI+Xj0Csv';
+const region='sa-east-1';
 
-const bucketName="yourband"
+const s3 = new AWS.S3({
+    accessKeyId: accesskey,
+secretAccessKey: accesskeysecret,
+Bucket:bucketName,
+region:region,
+apiVersion:'2012-10-17'
+});
+
+//console.log(s3);
 
 const upload = async (data) => {
 
+   
+    var params = {
+        Bucket: bucketName,
+        Key: data.name,
+        Body: data.path,
+        
+       }
+
+    
     let response;
-
+    //console.log(data);
     try {
-        async function uploadToS3 (attachmentId, data, mimetype, fileName) {
-            const params = {
-             Bucket: bucketName,
-             Key: attachmentId,
-             Body: data,
-             ContentType: mimetype,
-             Metadata: {
-              fileName
-             }
-            }
-            // Upload to S3
-            return s3.upload(params).promise()
-            
-           }
-      
-
-
+       
+      const up = s3.upload(params,(response,data)); 
+           console.log(up);
         response = {
             json: {
                 message: 'Upload realizado com sucesso!'
             }, status: 200
         }
+           
+      
+
+
+       
     }catch(error) {
         console.log(error);
         response = {
