@@ -1,20 +1,27 @@
-const Band = require('../models/Band');
+const Album = require('../models/Album');
+const Music = require('../models/Music');
+
+const upload = require('../services/upload');
 
 const prepareCreateMusic = ({
     dataReq: {
         _id
     },
-    body: {
-        band,
-        album,
-        musics
+    file: {
+        originalname,
+        buffer
     },
+    body: {
+        audio_name,
+        album
+    }
 }) => {
 
     return {
-        band,
         album,
-        musics,
+        originalname,
+        buffer,
+        audio_name,
         _id
     }
 }
@@ -25,19 +32,37 @@ const createMusic = async (data) => {
 
     try {
 
-        const res = await Band.findOneAndUpdate(
-            { _id: data.band, user: data._id, "albums._id": data.album },
-            { $push: { 'albums.$.musics': {$each: data.musics} } },
-            { useFindAndModify: false, runValidators: true, new: true }
-        );
-        console.log('Teste', res);
-        if(res){
+        const albumById = await Album.findById(data.album).populate('musics');
+
+        const music = new Music({
+            name: data.audio_name,
+            album: data.album
+        });
+
+        const path = `bands/${albumById.band}/albums/${albumById._id}/musics/${music._id}_${data.originalname}`;
+
+        const resp = await upload(data.buffer, path);
+
+        if(resp.Key) {
+
+            music.path = resp.Key;
+            await music.save();
+
+            albumById.musics.push(music);
+            await albumById.save();
 
             response = {
                 json: {
                     message: 'Music successfully created!',
-                    bands: res.albums
+                    musics: albumById.musics
                 }, status: 200
+            }
+        }else {
+
+            response = {
+                json: {
+                    message: 'Error in create music!'
+                }, status: 500
             }
         }
 

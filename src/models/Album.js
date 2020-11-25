@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Music = require('./Music').schema;
+// const Music = require('./Music').schema;
 
 const AlbumSchema = new mongoose.Schema({
     name: {
@@ -12,8 +12,18 @@ const AlbumSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    musics: {
-        type: [Music]
+    // musics: {
+    //     type: [Music]
+    // },
+    musics: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'Music'
+        }
+    ],
+    band: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Band'
     },
     createdAt: {
         type: Date,

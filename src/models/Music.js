@@ -11,6 +11,14 @@ const MusicSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    size: {
+        type: String,
+        trim: true
+    },
+    album: {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Album'
+    },
     createdAt: {
         type: Date,
         default: Date.now,

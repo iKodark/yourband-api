@@ -22,7 +22,7 @@ const prepareSignup = ({
 function TokenGenerate(user){
     
     return jwt.sign(user, process.env.SECRET, {
-        expiresIn: 3600
+        expiresIn: 86400
     });
 }
 
@@ -80,6 +80,7 @@ const prepareSignin = ({
 }
 
 const signin = async (data) => {
+
     let response;
     try {
 
@@ -97,7 +98,7 @@ const signin = async (data) => {
         if(user) {
 
             var token = jwt.sign(user.toJSON(), process.env.SECRET, {
-                expiresIn: 3600
+                expiresIn: 86400
             });
         }
 

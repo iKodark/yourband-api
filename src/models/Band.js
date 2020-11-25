@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Album = require('./Album').schema;
+// const Album = require('./Album').schema;
 
 const BandSchema = new mongoose.Schema({
     name: {
@@ -12,9 +12,15 @@ const BandSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
-    albums: {
-        type: [Album]
-    },
+    // albums: {
+    //     type: [Album]
+    // },
+    albums: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref:'Album'
+        }
+    ],
     user: {
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'

@@ -54,7 +54,7 @@ const createBand = async (data) => {
     }
 }
 
-const prepareReadBand = ({
+const prepareReadBands = ({
     dataReq: {
         _id
     }
@@ -65,17 +65,17 @@ const prepareReadBand = ({
     }
 }
 
-const readBand = async (data) => {
+const readBands = async (data) => {
 
     let response;
 
     try {
 
         const userById = await User.findById(data._id).populate('bands');
-        console.log(userById);
+
         response = {
             json: {
-                message: 'Band successfully created!',
+                message: 'Read band successfully!',
                 bands: userById.bands
             }, status: 200
         }
@@ -84,7 +84,101 @@ const readBand = async (data) => {
         console.log(error);
         response = {
             json: {
-                message: 'Error in create band!'
+                message: 'Error in read band!'
+            }, status: 500
+        }
+    }finally {
+        
+        return response;
+    }
+}
+
+const prepareReadBand = ({
+    dataReq: {
+        _id
+    },
+    params: {
+        band
+    },
+}) => {
+
+    return {
+        band,
+        _id
+    }
+}
+
+const readBand = async (data) => {
+
+    let response;
+
+    try {
+
+        const bandById = await Band.findById(data.band).populate('albums');
+
+        response = {
+            json: {
+                message: 'Read band successfully!',
+                band: bandById
+            }, status: 200
+        }
+
+    }catch(error) {
+        console.log(error);
+        response = {
+            json: {
+                message: 'Error in read band!'
+            }, status: 500
+        }
+    }finally {
+        
+        return response;
+    }
+}
+
+const prepareUpdateBand = ({
+    dataReq: {
+        _id
+    },
+    params: {
+        band
+    },
+    body: {
+        name
+    }
+}) => {
+
+    return {
+        _id,
+        band,
+        name
+    }
+}
+
+const updateBand = async (data) => {
+
+    let response;
+
+    try {
+
+        const bandById = await Band.findById(data.band);
+
+        bandById.name = data.name;
+
+        await bandById.save();
+
+        response = {
+            json: {
+                message: 'Update band successfully!',
+                band: bandById
+            }, status: 200
+        }
+
+    }catch(error) {
+        console.log(error);
+        response = {
+            json: {
+                message: 'Error in update band!'
             }, status: 500
         }
     }finally {
@@ -96,6 +190,10 @@ const readBand = async (data) => {
 module.exports = {
     createBand,
     prepareCreateBand,
+    readBands,
+    prepareReadBands,
     readBand,
-    prepareReadBand
+    prepareReadBand,
+    updateBand,
+    prepareUpdateBand
 };
